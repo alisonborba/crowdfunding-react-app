@@ -1,5 +1,7 @@
 import React, { useContext, createContext } from "react";
 
+const contractId = import.meta.env.VITE_THIRDWEB_CONTRACT;
+
 import {
   useAddress,
   useContract,
@@ -7,14 +9,11 @@ import {
   useContractWrite,
 } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
-// import { EditionMetadataWithOwnerOutputSchema } from "@thirdweb-dev/sdk";
 
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract(
-    "0x3cEeEbd92D1490015Ce0A4c5F51D325db9df4389"
-  );
+  const { contract } = useContract(contractId);
 
   const { mutateAsync: createCampaign } = useContractWrite(
     contract,
@@ -29,7 +28,6 @@ export const StateContextProvider = ({ children }) => {
 
   const publishCampaign = async (form) => {
     try {
-      console.log("form", form);
       const data = await createCampaign({
         args: [
           address, // owner
@@ -41,8 +39,6 @@ export const StateContextProvider = ({ children }) => {
         ],
       });
       console.log("data", data);
-
-      console.log("contract call success", data);
     } catch (error) {
       console.log("contract call failure", error);
     }
